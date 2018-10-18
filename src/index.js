@@ -7,6 +7,7 @@ import mapboxgl from 'mapbox-gl'
 import max_lines from './max_lines.json'
 import max_stops from './max_stops.json'
 import { bbox } from '@turf/turf'
+import symbol from './symbol_background.png';
 
 let route_dict = {
   '17_Ave': "MAX PURPLE",
@@ -33,7 +34,7 @@ class Application extends React.Component {
     this.state = {
       lng: -114.0708,
       lat: 51.0486,
-      zoom: 11,
+      zoom: 10.5,
       max_route: '17_ave',
       stop_name: "",
       connections: [],
@@ -140,13 +141,40 @@ class Application extends React.Component {
       });
 
 
+      let img = new Image(27,27)
+      img.onload = ()=> this.map.addImage('bus', img)
+      img.src = symbol
+
+      this.map.addLayer({
+          "id": "symbols",
+          "type": "symbol",
+          "source": "Bus Route",
+          "layout": {
+            "icon-image": "bus",
+            "icon-text-fit":'none',
+            "icon-text-fit-padding":[3,3,3,3],
+            "symbol-placement":  "point",
+            "text-field": String(this.state.bus_query), // part 2 of this is how to do it
+            "text-size": 12,
+            "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            "text-transform": "uppercase",
+            "text-letter-spacing": 0.05,
+            "text-offset": [0, 0]
+          },
+          "paint": {
+              "text-color": "red"
+          }
+      });
+
     });
+
+
 
     this.popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             anchor: 'bottom-left',
-            offset: [5,-20]
+            offset: [10,-15]
     });
 
     this.map.on('mouseover',"Max Stops",this.stops.bind(this));
@@ -172,7 +200,7 @@ class Application extends React.Component {
 
         if(this.map.getPaintProperty(value, 'line-opacity') === 1){
           this.map.fitBounds(bounds, {
-            padding: {top: 50, bottom:50, left: 50, right: 50}
+            padding: {top: 100, bottom:100, left: 100, right: 100}
           });
         }
       }else{
@@ -188,39 +216,6 @@ class Application extends React.Component {
     ReactDOM.render(text, placeholder);
   }
 
-  connections(index, e){
-
-    e.preventDefault();
-    let value = e.target.getAttribute('value')
-    this.setState({ active_conn: index });
-
-    this.setState({bus_query: value}, () => { //update selected bus route
-      let geojson = 'https://data.calgary.ca/resource/hpnd-riq4.geojson?route_short_name='+this.state.bus_query+'&$select=multiline'
-
-      fetch(geojson)
-        .then(response => {
-            return response.json();
-        }).then(data => {
-
-          try{
-            let bounds= bbox(data); //find bounding box using Turf
-            this.map.fitBounds(bounds, {
-              padding: {top: 100, bottom:100, left: 100, right: 100}
-            });
-            this.errordiv()
-          }
-          catch(error) {
-            this.errordiv(<div className="bus_select">This bus route is not available</div>)
-          }
-        });
-
-      this.map.getSource('Bus Route').setData(geojson);
-      this.map.setLayoutProperty('Bus Route', 'visibility', 'visible');
-
-    })
-
-  }
-
   handle(index, e){
     e.preventDefault();
 
@@ -230,6 +225,7 @@ class Application extends React.Component {
 
     this.toggle_layer(value)
     this.map.setLayoutProperty('Bus Route', 'visibility', 'none');
+    this.map.setLayoutProperty('symbols', 'visibility', 'none');
     this.popup.remove()
 
     this.errordiv()
@@ -247,6 +243,7 @@ class Application extends React.Component {
     this.setState({ active_route: index, active_conn:null, bus_query: null});
     this.toggle_layer(value)
     this.map.setLayoutProperty('Bus Route', 'visibility', 'none');
+    this.map.setLayoutProperty('symbols', 'visibility', 'none');
 
     this.errordiv()
 
@@ -270,6 +267,48 @@ class Application extends React.Component {
     });
   }
 
+  connections(x, e){
+    e.preventDefault();
+    this.setState({bus_query: x}, () => { //update selected bus route
+
+      let demoId = document.querySelectorAll('#bus_node');
+      demoId.forEach(element => {
+        if(this.state.bus_query===element.textContent){
+          element.classList.replace('bus_select2','bus_list2')
+        }else{
+          element.classList.replace('bus_list2','bus_select2')
+        }
+      });
+
+      let geojson = 'https://data.calgary.ca/resource/hpnd-riq4.geojson?route_short_name='+this.state.bus_query+'&$select=multiline'
+
+      this.map.setLayoutProperty('symbols', 'text-field', String(this.state.bus_query))
+
+      fetch(geojson)
+        .then(response => {
+            return response.json();
+        }).then(data => {
+
+          try{
+            let bounds= bbox(data); //find bounding box using Turf
+            this.map.fitBounds(bounds, {
+              padding: {top: 200, bottom:100, left: 100, right: 200}
+            });
+            this.errordiv()
+          }
+          catch(error) {
+            this.errordiv(<h3>This bus route is not available</h3>)
+          }
+        });
+
+      this.map.getSource('Bus Route').setData(geojson);
+      this.map.setLayoutProperty('Bus Route', 'visibility', 'visible');
+      this.map.setLayoutProperty('symbols', 'visibility', 'visible');
+
+    })
+
+  }
+
   stops(e){
 
     let f = this.map.queryRenderedFeatures(e.point, { layers: ['Max Stops'] });
@@ -288,12 +327,14 @@ class Application extends React.Component {
         if(x==="null"){
           output = <span value={x} key={x}>No Connections</span>
         }else{
-          output = <span style={{marginRight:"5px"}} onClick={this.connections.bind(this, index)} value={x} key={x}>{x}</span>
+
+          output = <span id="bus_node" className='bus_select2' onClick={this.connections.bind(this, x)} value={x} key={x}>{x}</span>
+
         }
         return output
       });
 
-      let text = <div>{this.state.stop_name}<br/> <span style={{fontWeight:'lighter', fontSize:'14px', cursor: 'pointer'}}>{routeConnections}</span></div>
+      let text = <div><h2>{this.state.stop_name}</h2>{routeConnections}</div>
 
       const placeholder = document.createElement('div');
       ReactDOM.render(text, placeholder);
@@ -312,20 +353,10 @@ class Application extends React.Component {
 
       const line_style = {height:'3px', background:route_color[x.properties.route_name],  borderRadius:'8px'}
 
-      return  <li style={{marginBottom: '10px'}}className={this.state.active_route===index ? 'route_list': 'route_select'} onClick={this.handle.bind(this, index)} value ={value} key={value}>{label}  <hr style={line_style} /></li>
+      return  <li style={{marginBottom: '10px'}} className={this.state.active_route===index ? 'route_list': 'route_select'} onClick={this.handle.bind(this, index)} value ={value} key={value}>{label}  <hr style={line_style} /></li>
 
 
 
-    });
-
-    let routeConnections = this.state.connections.map((x, index) => {
-      let output
-      if(x==="null"){
-        output = <span className='bus_select' value={x} key={x}>No Connections</span>
-      }else{
-        output = <span className={this.state.active_conn===index ? 'bus_list': 'bus_select'} onClick={this.connections.bind(this, index)} value={x} key={x}>{x}</span>
-      }
-      return output
     });
 
 
@@ -344,10 +375,6 @@ class Application extends React.Component {
           </div>
           <br/>
 
-          <h2>{this.state.stop_name}</h2>
-            <div style = {{textAlign: 'center'}}>
-              {routeConnections}
-            </div>
           <div id="error"></div>
 
           <div className='byline'>

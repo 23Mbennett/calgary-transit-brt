@@ -114,11 +114,11 @@ p{
 
 	div.mapboxgl-popup-content{
 		background-color:rgba(28, 28, 28, .9);
-		font-size:16px;
 		color: white;
 		width:150px;
 		border-radius: 15px;
 		font-weight:bold;
+		padding: 10px
 	}
 
 	div.mapboxgl-popup-tip{
@@ -154,6 +154,10 @@ p{
 		font-weight:bold;
 	}
 
+	.route_select:hover{
+		color:grey
+	}
+
 	.bus_list{
 		font-size:16px;
 		line-height:20px;
@@ -174,6 +178,41 @@ p{
 		padding: 3px;
 		font-weight:bold;
 		margin-right: 5px;
+	}
+
+	.bus_list2{
+		width:27px;
+	 line-height: 27px;
+	 border-radius: 50%;
+	 text-align: center;
+	 font-size: 13px;
+	 display: inline-block;
+		color: black;
+		background-color: white;
+		font-weight:bold;
+		margin-right: 3px;
+		/* margin-bottom: 1px; */
+		cursor: pointer;
+	}
+
+	.bus_select2{
+		width:27px;
+	 line-height: 27px;
+	 border-radius: 50%;
+	 text-align: center;
+	 font-size: 13px;
+	 display: inline-block;
+		color: white;
+		font-weight:bold;
+		margin-right: 3px;
+		cursor: pointer;
+		  /* border: 1px solid white;
+			margin-bottom: 1px; */
+	}
+
+	.bus_select2:hover{
+		color: grey
+
 	}
 
 	.border_box{
@@ -209,12 +248,22 @@ p{
 	}
 
 	h2 {
-		font-size:22px;
-		line-height:22px;
-		font-weight:400;
+		font-size:16px;
+		line-height:20px;
+		font-weight:350;
+		color: white;
+		text-align: left;
+		margin-bottom: 5px;
+		display: block;
+	}
+
+	h3 {
+		font-size:18px;
+		line-height:20px;
+		font-weight:350;
 		color: white;
 		text-align: center;
-		margin-bottom: 10px;
+		margin-bottom: 5px;
 		display: block;
 	}
 
