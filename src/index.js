@@ -34,26 +34,33 @@ class Application extends React.Component {
     this.state = {
       lng: -114.0708,
       lat: 51.0486,
-      zoom: 10.5,
+      zoom: 10.7,
       max_route: '17_ave',
       stop_name: "",
       connections: [],
       bus_query: null,
       active_route: null,
-      active_conn: null
+      active_conn: null,
+      height:props.height,
+      width: props.width
     };
+  }
+
+  componentWillMount(){
+    this.setState({height: window.innerHeight,width:window.innerWidth});
+
   }
 
   componentDidMount() {
 
-    const {lng, lat, zoom } = this.state;
+    const {lng, lat, zoom} = this.state;
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/saadiqm/cjbjougmt08z72rsa7me1duoi',
       center: [lng, lat],
       zoom: zoom,
       maxZoom: 13,
-      minZoom: 10.5,
+      minZoom: 8,
     });
 
     this.map.on('load', () => {
@@ -122,8 +129,10 @@ class Application extends React.Component {
           "source": 'Max Stops',
           "paint": {
               "circle-color": "white",
-              'circle-radius':9,
-              "circle-opacity": 0.6
+              'circle-radius':{
+                  stops: [[8, 4], [11, 6], [16, 20]]
+              },
+              "circle-opacity": 0.7
           },
           "filter": ["==", "route_name", '']
       });
@@ -134,8 +143,12 @@ class Application extends React.Component {
           "source": 'Max Stops',
           "paint": {
               "circle-color": "white",
-              'circle-radius':11,
-              "circle-opacity": 1.0
+              'circle-radius':{
+                stops: [[8, 4], [11, 6], [16, 20]]
+              },
+              "circle-opacity": 0.9,
+              "circle-stroke-width": 4,
+              "circle-stroke-color": '#a5a5a5'
           },
           "filter": ["==", "stop_name", '']
       });
@@ -153,7 +166,10 @@ class Application extends React.Component {
             "icon-image": "bus",
             "icon-text-fit":'none',
             "icon-text-fit-padding":[3,3,3,3],
-            "symbol-placement":  "point",
+            "symbol-placement":  "line",
+            'symbol-spacing':1000,
+            'icon-rotation-alignment': 'viewport',
+            'text-rotation-alignment':'viewport',
             "text-field": String(this.state.bus_query), // part 2 of this is how to do it
             "text-size": 12,
             "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
@@ -172,7 +188,7 @@ class Application extends React.Component {
 
     this.popup = new mapboxgl.Popup({
             closeButton: false,
-            closeOnClick: false,
+            closeOnClick: true,
             anchor: 'bottom-left',
             offset: [10,-15]
     });
@@ -189,6 +205,14 @@ class Application extends React.Component {
   }
 
   toggle_layer(value){
+
+    let pad = {}
+    if (this.state.width<500){
+      pad ={top:this.state.height*0.4, bottom: 15, left:15, right:15};
+    } else {
+      pad ={top:this.state.height*0.1, bottom:this.state.height*0.1, left:this.state.width*0.3, right:this.state.height*0.1};
+    }
+
     max_lines.features.forEach((feature)=>{
       let layer_name = feature.properties.route_name
 
@@ -200,7 +224,7 @@ class Application extends React.Component {
 
         if(this.map.getPaintProperty(value, 'line-opacity') === 1){
           this.map.fitBounds(bounds, {
-            padding: {top: 100, bottom:100, left: 100, right: 100}
+            padding: {top: pad.top, bottom:pad.bottom, left: pad.left, right: pad.right}
           });
         }
       }else{
@@ -269,6 +293,14 @@ class Application extends React.Component {
 
   connections(x, e){
     e.preventDefault();
+
+    let pad = {}
+    if (this.state.width<500){
+      pad ={top:this.state.height*0.4, bottom: 15, left:15, right:15};
+    } else {
+      pad ={top:this.state.height*0.1, bottom:this.state.height*0.1, left:this.state.width*0.3, right:this.state.height*0.1};
+    }
+
     this.setState({bus_query: x}, () => { //update selected bus route
 
       let demoId = document.querySelectorAll('#bus_node');
@@ -292,12 +324,12 @@ class Application extends React.Component {
           try{
             let bounds= bbox(data); //find bounding box using Turf
             this.map.fitBounds(bounds, {
-              padding: {top: 200, bottom:100, left: 100, right: 200}
+              padding: {top: pad.top, bottom:pad.bottom, left: pad.left, right: pad.right}
             });
             this.errordiv()
           }
           catch(error) {
-            this.errordiv(<h3>This bus route is not available</h3>)
+            this.errordiv(<h3>Cannot show this bus route</h3>)
           }
         });
 
@@ -373,7 +405,6 @@ class Application extends React.Component {
               {max_routes}
             </ul>
           </div>
-          <br/>
 
           <div id="error"></div>
 

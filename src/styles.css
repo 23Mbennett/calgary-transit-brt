@@ -9,66 +9,130 @@ body {
 	padding: 0px;
 }
 
-
-
-.route_list{
-	color: '#4286f4';
-}
-
-.alignleft {
-	float: left;
-  font-weight: bold;
-}
-.alignright {
-	float: right;
-  font-weight: bold;
-}
-
-.select_option{
-	position: relative;
-	width:100%;
-	font-size:15px;
-	padding: 3px;
-	padding-left: 29px;
-	border-radius: 7px;
-	border: 2px solid #ccc;
-	color: #000;
-	background: rgba(0,0,0,0.3);
-	font-style:bold;
-	outline:none;
-	margin-bottom:5px;
-	display: inline;
-	-webkit-appearance: none;
-		 -moz-appearance: none;
-					appearance: none;
-	background-position: 5px 4px;
-}
-
 .border_box{
-	background-color:rgba(225, 225, 225, .9);
+	background-color:rgba(28, 28, 28, .9);
 	width:95%;
 	display: inline-block;
 	position: absolute;
 	margin:0px;
-	padding:15px;
+	padding:10px 20px 10px 20px ;
 	color: #000;
 	border-radius: 15px;
 }
 
-h1 {
-	color:#4f4f4f;
-	font-size:15px;
-	line-height:15px;
+div.mapboxgl-popup-content{
+	background-color:rgba(28, 28, 28, .9);
+	color: white;
+	width:150px;
+	border-radius: 15px;
 	font-weight:bold;
+	padding: 10px
+}
+
+div.mapboxgl-popup-tip{
+	display: none
+}
+
+.route_list{
+	font-size:12px;
+	line-height:20px;
+	letter-spacing: 5px;
+	color: white;
+	cursor: pointer;
+	border-radius: 50px;
+	padding: 5px 10% 7px 10%;
+	text-align: center;
+	font-weight:bold;
+	background-color:#383838;
+
+}
+
+.route_select{
+	font-size:12px;
+	line-height:20px;
+	letter-spacing: 5px;
+	color: white;
+	cursor: pointer;
+	border-radius: 50px;
+	padding: 5px 10% 7px 10%;
+	text-align: center;
+	font-weight:bold;
+}
+
+.route_select:hover{
+	color:grey
+}
+
+
+.bus_list2{
+	width:27px;
+  line-height: 27px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 13px;
+  display: inline-block;
+	color: black;
+	background-color: white;
+	font-weight:bold;
+	margin-right: 3px;
+	margin-bottom: 1px;
+	cursor: pointer;
+}
+
+.bus_select2{
+	width:27px;
+ line-height: 27px;
+ border-radius: 50%;
+ text-align: center;
+ font-size: 13px;
+ display: inline-block;
+	color: white;
+	font-weight:bold;
+	margin-right: 3px;
+	cursor: pointer;
+	margin-bottom: 1px;
+	background-color: #383838
+}
+
+.bus_select2:hover{
+	color: grey
+
+}
+.byline{
+	margin-top: 15px;
+	display: block;
+	text-align: center;
+}
+
+h1 {
+	font-size:20px;
+	line-height:22px;
+	font-weight:300;
 	margin-bottom: 15px;
+	color: white;
+	text-align: center;
+	letter-spacing: 3px;
+	font-weight:600;
 }
 
 h2 {
-	color:#4f4f4f;
-	font-size:14px;
-	line-height:18px;
-	display: inline-block;
-	margin-bottom: 8px;
+	font-size:16px;
+	line-height:20px;
+	font-weight:350;
+	color: white;
+	text-align: left;
+	margin-bottom: 5px;
+	display: block;
+}
+
+h3 {
+	font-size:18px;
+	line-height:20px;
+	font-weight:350;
+	color: white;
+	text-align: center;
+	margin-bottom: 5px;
+	display: block;
 }
 
 h4 {
@@ -79,38 +143,29 @@ h4 {
 }
 
 
-p{
-	color:#4f4f4f;
-	line-height: 18px;
-	font-size: 12px;
-}
-
-
-
-.description{
-	display:none;
-}
 
 .byline{
 	display:none;
 }
 
-.column {
-    float: left;
-    width: 33.33%;
-    padding: 3px;
+#error{
+	display:none;
 }
 
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
+
 
 
 @media screen and ( min-width: 500px ) {
 
+	.border_box{
+		background-color:rgba(28, 28, 28, .9);
+		width:300px;
+		display: inline-block;
+		position: absolute;
+		margin:20px;
+		padding:15px;
+		color: #000;
+	}
 
 	div.mapboxgl-popup-content{
 		background-color:rgba(28, 28, 28, .9);
@@ -158,27 +213,6 @@ p{
 		color:grey
 	}
 
-	.bus_list{
-		font-size:16px;
-		line-height:20px;
-		color: black;
-		cursor: pointer;
-		border-radius: 50px;
-		background-color:white;
-		padding: 3px;
-		font-weight:bold;
-		margin-right: 5px;
-	}
-
-	.bus_select{
-		color: white;
-		font-size:16px;
-		line-height:20px;
-		cursor: pointer;
-		padding: 3px;
-		font-weight:bold;
-		margin-right: 5px;
-	}
 
 	.bus_list2{
 		width:27px;
@@ -191,7 +225,7 @@ p{
 		background-color: white;
 		font-weight:bold;
 		margin-right: 3px;
-		/* margin-bottom: 1px; */
+		margin-bottom: 1px;
 		cursor: pointer;
 	}
 
@@ -206,8 +240,8 @@ p{
 		font-weight:bold;
 		margin-right: 3px;
 		cursor: pointer;
-		  /* border: 1px solid white;
-			margin-bottom: 1px; */
+		margin-bottom: 1px;
+		background-color: #383838
 	}
 
 	.bus_select2:hover{
@@ -215,19 +249,10 @@ p{
 
 	}
 
-	.border_box{
-		background-color:rgba(28, 28, 28, .9);
-		width:300px;
-		display: inline-block;
-		position: absolute;
-		margin:20px;
-		padding:15px;
-		color: #000;
 
-	}
 
 	.description{
-		margin-top: 20px;
+		margin-top: 0px;
 		display: block;
 	}
 
@@ -241,7 +266,7 @@ p{
 		font-size:18px;
 		line-height:23px;
 		font-weight:300;
-		margin-bottom: 25px;
+		margin-bottom: 15px;
 		color: white;
 		text-align: center;
 		letter-spacing: 3px;
@@ -265,6 +290,13 @@ p{
 		text-align: center;
 		margin-bottom: 5px;
 		display: block;
+	}
+
+	h4 {
+		color:#4f4f4f;
+		font-size:12px;
+		font-style: italic;
+		line-height:13px;
 	}
 
 
