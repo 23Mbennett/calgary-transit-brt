@@ -143,18 +143,6 @@ h4 {
 }
 
 
-
-.byline{
-	display:none;
-}
-
-#error{
-	display:none;
-}
-
-
-
-
 @media screen and ( min-width: 500px ) {
 
 	.border_box{
@@ -247,13 +235,6 @@ h4 {
 	.bus_select2:hover{
 		color: grey
 
-	}
-
-
-
-	.description{
-		margin-top: 0px;
-		display: block;
 	}
 
 	.byline{

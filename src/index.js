@@ -60,12 +60,31 @@ class Application extends React.Component {
       center: [lng, lat],
       zoom: zoom,
       maxZoom: 13,
-      minZoom: 8,
+      minZoom: 10,
+      transformRequest: (url, resourceType) => {
+         if(resourceType === 'Source' && url.startsWith('https://04lkhtx0r2')) {
+           return {
+            url: url,
+            credentials: "omit"
+          }
+         }
+       }
     });
 
     this.map.on('load', () => {
 
-      let geojson = 'https://data.calgary.ca/resource/hpnd-riq4.geojson?route_short_name='+this.state.bus_query+'&$select=multiline'
+      let layers = this.map.getStyle().layers;
+      // Find the index of the first symbol layer in the map style
+      let firstSymbolId;
+      for (let i = 0; i < layers.length; i++) {
+          if (layers[i].type === 'symbol') {
+              firstSymbolId = layers[i].id;
+              break;
+          }
+      }
+
+
+      let geojson = 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/'+String(this.state.bus_query)
 
       this.map.addSource('Bus Route', {
         type: 'geojson',
@@ -80,6 +99,44 @@ class Application extends React.Component {
         type: 'geojson',
         data: max_stops
       });
+      this.map.addSource('201', {
+        type: 'geojson',
+        data: 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/201'
+      });
+      this.map.addSource('202', {
+        type: 'geojson',
+        data: 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/202'
+      });
+
+      this.map.addLayer({
+          "id": "201",
+          "type": "line",
+          "source": '201',
+          "paint": {
+              "line-color": "red",
+              "line-width": 4,
+              "line-opacity": 0.2
+          },
+          "layout": {
+              "line-join": "round",
+              "line-cap": "round"
+          },
+      }, firstSymbolId);
+
+      this.map.addLayer({
+          "id": "202",
+          "type": "line",
+          "source": '202',
+          "paint": {
+              "line-color": "#003a99",
+              "line-width": 4,
+              "line-opacity": 0.2
+          },
+          "layout": {
+              "line-join": "round",
+              "line-cap": "round"
+          },
+      }, firstSymbolId);
 
       max_lines.features.map((feature)=>{
         let layer_name = feature.properties.route_name
@@ -96,17 +153,17 @@ class Application extends React.Component {
                   '17_Ave', 'purple',
                   'blue'
                 ],
-                "line-width": 10,
-                "line-opacity": 0.3
+                "line-width": 7,
+                "line-opacity": 0.6
             },
             "layout": {
                 "line-join": "round",
                 "line-cap": "round"
             },
             "filter": ["==", "route_name", layer_name]
-        });
+        }, firstSymbolId);
 
-      });
+      },'road_label_large');
 
       this.map.addLayer({
           "id": "Bus Route",
@@ -114,14 +171,14 @@ class Application extends React.Component {
           "source": 'Bus Route',
           "paint": {
               "line-color": "red",
-              "line-width": 4,
-              "line-opacity": 0.4
+              "line-width": 5,
+              "line-opacity": 0.9
           },
           "layout": {
               "line-join": "round",
               "line-cap": "round"
           },
-      });
+      }, firstSymbolId);
 
       this.map.addLayer({
           "id": "Max Stops",
@@ -301,18 +358,18 @@ class Application extends React.Component {
       pad ={top:this.state.height*0.1, bottom:this.state.height*0.1, left:this.state.width*0.3, right:this.state.height*0.1};
     }
 
-    this.setState({bus_query: x}, () => { //update selected bus route
+    this.setState({bus_query: x.trim()}, () => { //update selected bus route
 
       let demoId = document.querySelectorAll('#bus_node');
       demoId.forEach(element => {
-        if(this.state.bus_query===element.textContent){
+        if(this.state.bus_query===element.textContent.trim()){
           element.classList.replace('bus_select2','bus_list2')
         }else{
           element.classList.replace('bus_list2','bus_select2')
         }
       });
 
-      let geojson = 'https://data.calgary.ca/resource/hpnd-riq4.geojson?route_short_name='+this.state.bus_query+'&$select=multiline'
+      let geojson = 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/'+this.state.bus_query
 
       this.map.setLayoutProperty('symbols', 'text-field', String(this.state.bus_query))
 
