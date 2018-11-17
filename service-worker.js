@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.2/workbox-sw.js");
 
 importScripts(
-  "/calgary-transit-brt/precache-manifest.1b2e83d95f98c9acb080196116d63a2b.js"
+  "/calgary-transit-brt/precache-manifest.e025a750aa34b7904ead71ccade578d1.js"
 );
 
 workbox.clientsClaim();
