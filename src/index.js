@@ -4,10 +4,14 @@ import ReactDOM from 'react-dom';
 import './styles.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl'
-import max_lines from './max_lines.json'
-import max_stops from './max_stops.json'
+
 import { bbox } from '@turf/turf'
 import symbol from './symbol_background.png';
+
+import max_lines from './geojson/max_lines.json'
+import max_stops from './geojson/max_stops.json'
+import red_line from './geojson/201.json'
+import blue_line from './geojson/202.json'
 
 let route_dict = {
   '17_Ave': "MAX PURPLE",
@@ -48,7 +52,6 @@ class Application extends React.Component {
 
   componentWillMount(){
     this.setState({height: window.innerHeight,width:window.innerWidth});
-
   }
 
   componentDidMount() {
@@ -90,7 +93,6 @@ class Application extends React.Component {
         type: 'geojson',
         data: geojson
       });
-
       this.map.addSource('Max Routes', {
         type: 'geojson',
         data: max_lines
@@ -101,11 +103,51 @@ class Application extends React.Component {
       });
       this.map.addSource('201', {
         type: 'geojson',
-        data: 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/201'
+        data: red_line
       });
       this.map.addSource('202', {
         type: 'geojson',
-        data: 'https://xxtg9c00w7.execute-api.us-west-2.amazonaws.com/dev/shapes/202'
+        data: blue_line
+      });
+
+      this.map.addLayer({
+          "id": "Red Line",
+          "type": "symbol",
+          "source": "201",
+          "layout": {
+            "symbol-placement":  "line",
+            'symbol-spacing':1000,
+            'text-rotation-alignment':'auto',
+            "text-field": '201 Red Line',
+            "text-size": 10,
+            "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            "text-transform": "uppercase",
+            "text-letter-spacing": 0.2,
+            "text-offset": [0.8, 0.8]
+          },
+          "paint": {
+              "text-color": "white"
+          }
+      });
+
+      this.map.addLayer({
+          "id": "Blue Line",
+          "type": "symbol",
+          "source": "202",
+          "layout": {
+            "symbol-placement":  "line",
+            'symbol-spacing':1000,
+            'text-rotation-alignment':'auto',
+            "text-field": '202 Blue Line',
+            "text-size": 10,
+            "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            "text-transform": "uppercase",
+            "text-letter-spacing": 0.2,
+            "text-offset": [0.8, 0.8]
+          },
+          "paint": {
+              "text-color": "white"
+          }
       });
 
       this.map.addLayer({
@@ -128,9 +170,9 @@ class Application extends React.Component {
           "type": "line",
           "source": '202',
           "paint": {
-              "line-color": "#003a99",
+              "line-color": "#008afc",
               "line-width": 4,
-              "line-opacity": 0.2
+              "line-opacity": 0.2,
           },
           "layout": {
               "line-join": "round",
@@ -153,7 +195,7 @@ class Application extends React.Component {
                   '17_Ave', 'purple',
                   'blue'
                 ],
-                "line-width": 7,
+                "line-width": 5,
                 "line-opacity": 0.6
             },
             "layout": {
@@ -171,7 +213,7 @@ class Application extends React.Component {
           "source": 'Bus Route',
           "paint": {
               "line-color": "red",
-              "line-width": 5,
+              "line-width": 4,
               "line-opacity": 0.9
           },
           "layout": {
@@ -443,8 +485,6 @@ class Application extends React.Component {
       const line_style = {height:'3px', background:route_color[x.properties.route_name],  borderRadius:'8px'}
 
       return  <li style={{marginBottom: '10px'}} className={this.state.active_route===index ? 'route_list': 'route_select'} onClick={this.handle.bind(this, index)} value ={value} key={value}>{label}  <hr style={line_style} /></li>
-
-
 
     });
 
