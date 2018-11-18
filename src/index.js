@@ -506,6 +506,7 @@ class Application extends React.Component {
           <div id="error"></div>
 
           <div className='byline'>
+            <h4><strong>This map should not be used for trip planning. Please visit <a href="https://www.calgarytransit.com">calgarytransit.com</a></strong></h4>
             <h4>&copy;2018 Saadiq Mohiuddin <a href="https://www.twitter.com/saadiqmohiuddin">@saadiqmohiuddin</a></h4>
           </div>
 
